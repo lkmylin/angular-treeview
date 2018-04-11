@@ -1,0 +1,11 @@
+<div attr.id="{{Data?.ID}}" class="treeview-left">
+  <div class="treeview-block">
+      <span>
+        <img [src]="Data?.Collapsed ? '../assets/Images/plus.gif' : '../assets/Images/minus.gif'" (click)="Data?.ToggleAll()" class="treeview-pointer" />
+      </span>
+      <span>Expand/Collapse All</span>
+  </div>
+  <div class="treeview-block">
+    <app-treeitem [Item]="item" *ngFor="let item of Data?.TreeItems"></app-treeitem>
+  </div>
+</div>

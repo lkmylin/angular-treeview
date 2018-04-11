@@ -1,0 +1,19 @@
+<div [class]="Item?.HasChildren === false ? 'treeview-block treeview-file treeview-line' : 'treeview-block treeview-line'">
+  <div class="treeview-block treeview-padding">
+      <span *ngIf="Item?.HasChildren === true && Item?.Collapsed === true">
+          <img src="../assets/Images/plus.gif" (click)="Item?.ToggleNode()" class="treeview-icon treeview-pointer" />
+          <img src="../assets/Images/folder.gif" (click)="Item?.ToggleNode()" class="treeview-pointer" />
+      </span>
+      <span *ngIf="Item?.HasChildren === true && Item?.Collapsed === false">
+          <img src="../assets/Images/minus.gif" (click)="Item?.ToggleNode()" class="treeview-icon treeview-pointer" />
+          <img src="../assets/Images/open.gif" (click)="Item?.ToggleNode()" class="treeview-pointer" />
+      </span>
+      <span *ngIf="Item?.HasChildren === false">
+          <img src="../assets/Images/file.gif" />
+      </span>
+      <span>{{Item?.Title}}</span>
+  </div>
+  <div *ngIf="Item?.HasChildren === true" [hidden]="Item?.Collapsed" class="treeview-block treeview-margin">
+      <app-treeitem [Item]="item" *ngFor="let item of Item.Children"></app-treeitem>
+  </div>
+</div>
