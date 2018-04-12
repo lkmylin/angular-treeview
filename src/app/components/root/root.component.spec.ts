@@ -1,6 +1,12 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RootComponent } from './root.component';
+import { DemoComponent } from '../../../assets/demo/demo.component';
+import { TreeviewComponent } from '../treeview/treeview.component';
+import { TreeItemComponent } from '../treeitem/treeitem.component';
+import { HttpModule } from '@angular/http';
+import { CacheService } from '../../services/cache.service';
+import { TreedataService } from '../../services/treedata.service';
 
 describe('RootComponent', () => {
   let component: RootComponent;
@@ -8,7 +14,20 @@ describe('RootComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ RootComponent ]
+      declarations: [
+        DemoComponent,
+        TreeviewComponent,
+        TreeItemComponent,
+        RootComponent
+      ],
+      imports: [
+        HttpModule
+      ],
+      providers: [
+        {provide: "$window", useValue: window},
+        CacheService,
+        TreedataService
+      ]
     })
     .compileComponents();
   }));

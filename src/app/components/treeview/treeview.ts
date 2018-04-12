@@ -4,7 +4,7 @@ import { IStateManager } from "../../services/cache.service";
 export interface ITreeview {
   ID: string;
   Collapsed: boolean;
-  TreeItems: Array<ITreeItemPartial>;
+  TreeItems: Array<ITreeItem>;
   StateManager: IStateManager;
   ToggleAll(): void;
   IsNodeCollapsed(treeKey: number): boolean;

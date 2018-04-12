@@ -11,7 +11,7 @@
       <span *ngIf="Item?.HasChildren === false">
           <img src="../assets/Images/file.gif" />
       </span>
-      <span>{{Item?.Title}}</span>
+      <span class="treeview-treeitem-title">{{Item?.Title}}</span>
   </div>
   <div *ngIf="Item?.HasChildren === true" [hidden]="Item?.Collapsed" class="treeview-block treeview-margin">
       <app-treeitem [Item]="item" *ngFor="let item of Item.Children"></app-treeitem>
