@@ -1,13 +1,13 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
-import { CacheService } from '../../services/cache.service';
+import { Component, OnInit, Inject, Input } from "@angular/core";
+import { CacheService } from "../../services/cache.service";
 import {TreedataService} from "../../services/treedata.service";
-import { ITreeview, Treeview } from './treeview';
-import { ITreeItemPartial } from "../treeitem/treeitem";
+import { ITreeview, Treeview } from "../../models/treeview";
+import { ITreeItemPartial } from "../../models/treeitem";
 
 @Component({
-  selector: 'app-treeview',
-  templateUrl: './treeview.component.html',
-  styleUrls: ['./treeview.component.css']
+  selector: "app-treeview",
+  templateUrl: "./treeview.component.html",
+  styleUrls: ["./treeview.component.css"]
 })
 export class TreeviewComponent implements OnInit {
 

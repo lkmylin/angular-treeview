@@ -1,5 +1,5 @@
-import { ITreeItemPartial, ITreeItem, TreeItem } from "../treeitem/treeitem";
-import { IStateManager } from "../../services/cache.service";
+import { ITreeItemPartial, ITreeItem, TreeItem } from "./treeitem";
+import { IStateManager } from "../services/cache.service";
 
 export interface ITreeview {
   ID: string;

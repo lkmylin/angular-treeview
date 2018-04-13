@@ -1,13 +1,12 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { DemoComponent } from "./demo.component";
+import { HttpModule } from "@angular/http";
+import { CacheService } from "../../app/services/cache.service";
+import { TreedataService } from "../../app/services/treedata.service";
+import { TreeviewComponent } from "../../app/components/treeview/treeview.component";
+import { TreeItemComponent } from "../../app/components/treeitem/treeitem.component";
 
-import { DemoComponent } from './demo.component';
-import { HttpModule } from '@angular/http';
-import { CacheService } from '../../app/services/cache.service';
-import { TreedataService } from '../../app/services/treedata.service';
-import { TreeviewComponent } from '../../app/components/treeview/treeview.component';
-import { TreeItemComponent } from '../../app/components/treeitem/treeitem.component';
-
-describe('DemoComponent', () => {
+describe("assets/demo", () => {
   let component: DemoComponent;
   let fixture: ComponentFixture<DemoComponent>;
 
@@ -36,7 +35,7 @@ describe('DemoComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

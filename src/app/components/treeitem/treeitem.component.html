@@ -1,4 +1,4 @@
-<div [class]="Item?.HasChildren === false ? 'treeview-block treeview-file treeview-line' : 'treeview-block treeview-line'">
+<div [class]="Item?.HasChildren === false ? 'treeview-treeitem treeview-block treeview-file treeview-line' : 'treeview-treeitem treeview-block treeview-line'">
   <div class="treeview-block treeview-padding">
       <span *ngIf="Item?.HasChildren === true && Item?.Collapsed === true">
           <img src="../assets/Images/plus.gif" (click)="Item?.ToggleNode()" class="treeview-icon treeview-pointer" />

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/catch';
-import { ITreeItemPartial } from "../components/treeitem/treeitem";
+import { Injectable } from "@angular/core";
+import { Http } from "@angular/http";
+import { ITreeItemPartial } from "../models/treeitem";
+import { Observable } from "rxjs/Rx";
+import "rxjs/add/operator/map";
+import "rxjs/add/operator/catch";
 
 @Injectable()
 export class TreedataService {

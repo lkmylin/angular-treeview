@@ -1,8 +1,7 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed } from "@angular/core/testing";
+import { CacheService } from "./cache.service";
 
-import { CacheService } from './cache.service';
-
-describe('CacheService', () => {
+describe("services/cache", () => {
 
   let _cacheService: CacheService = null;
   let _thenValue: any = null;
@@ -30,7 +29,7 @@ describe('CacheService', () => {
     _cacheService.StateManager.SetValue(id, property, value);
   };
 
-  it('should be created', () => {
+  it("should be created", () => {
     _setup({});
     expect(_cacheService).toBeTruthy();
     _teardown();

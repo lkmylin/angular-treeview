@@ -1,4 +1,4 @@
-import { ITreeview } from "../treeview/treeview";
+import { ITreeview } from "./treeview";
 
 export interface ITreeItemPartial {
   TreeKey: number;
