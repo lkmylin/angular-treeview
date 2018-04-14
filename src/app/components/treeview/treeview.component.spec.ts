@@ -17,7 +17,6 @@ describe("components/treeview", () => {
   let _fixture: ComponentFixture<TreeviewComponent>;
   let _cacheService: CacheService = null;
   let _dataService: TreedataService = null;
-  let _thenResult: any = null;
 
   let _setupAsync: () => void = () => {
     TestBed.configureTestingModule({
@@ -47,6 +46,7 @@ describe("components/treeview", () => {
     _component = _fixture.componentInstance;
     _component._id = "someID";    
     _fixture.detectChanges();
+    spyOn(_component.Data, "ToggleAll").and.callThrough();
   };
 
   let _teardown: () => void = () => {
@@ -54,34 +54,27 @@ describe("components/treeview", () => {
     _fixture = null;
     _cacheService = null;
     _dataService = null;
-    _thenResult = null;
   };
 
-  let _givenState: (collapsed: boolean, expandedNodes: number[]) => void = (collapsed: boolean, expandedNodes: number[]) => {
+  let _givenState: (collapsed: boolean, cachedNodes: number[]) => void = (collapsed: boolean, cachedNodes: number[]) => {
     spyOn(_cacheService.StateManager, "GetValue")
       .and.callFake((id: string, property: string, defaultValue: any) => {
-        return property === "AllCollapsed" ? collapsed : expandedNodes;
+        return property === "AllCollapsed" ? collapsed : cachedNodes;
       });
   };
 
-  let _whenToggleAll: () => void = () => {
-    _component.Data.ToggleAll();
+  let _whenToggleAllIconClick: () => void = () => {
+    _fixture.debugElement.query(By.css(".treeview-collapse-all")).nativeElement.click();
     _fixture.detectChanges();
   };
 
-  let _whenIsNodeCollapsed: (treeKey: number) => void = (treeKey: number) => {
-    _thenResult = _component.Data.IsNodeCollapsed(treeKey);
-  };
-
   let _thenCollapsed: () => void = () => {
-    expect(_component.Data.Collapsed).toBe(true);
     expect(_fixture.debugElement.query(By.css(".treeview-collapse-all")).nativeElement.src.endsWith("plus.gif")).toBe(true);
     expect(_fixture.debugElement.queryAll(By.css("app-treeitem"))[0].queryAll(By.css("img"))[0].nativeElement.src.endsWith("plus.gif")).toBe(true);
     expect(_fixture.debugElement.queryAll(By.css("app-treeitem"))[0].queryAll(By.css("img"))[1].nativeElement.src.endsWith("folder.gif")).toBe(true);
   };
 
   let _thenExpanded: () => void = () => {
-    expect(_component.Data.Collapsed).toBe(false);
     expect(_fixture.debugElement.query(By.css(".treeview-collapse-all")).nativeElement.src.endsWith("minus.gif")).toBe(true);
     expect(_fixture.debugElement.queryAll(By.css("app-treeitem"))[0].queryAll(By.css("img"))[0].nativeElement.src.endsWith("minus.gif")).toBe(true);
     expect(_fixture.debugElement.queryAll(By.css("app-treeitem"))[0].queryAll(By.css("img"))[1].nativeElement.src.endsWith("open.gif")).toBe(true);
@@ -97,8 +90,7 @@ describe("components/treeview", () => {
   it("should build tree", async () => {
     await _setupAsync();
     _setup(() => {});
-    expect(_component.Data.TreeItems.length).toBe(4);
-    expect(_component.Data.TreeItems[0].Children.length).toBe(2);
+    expect(_fixture.debugElement.queryAll(By.css("app-treeitem")).length).toBe(11);
     _teardown();
   });
 
@@ -116,61 +108,24 @@ describe("components/treeview", () => {
     _teardown();
   });
 
-  describe("ToggleAll", () => {
+  describe("expand/collapse icon click event", () => {
+
+    it("should invoke ToggleAll", async () => {
+      await _setupAsync();
+      _setup(() => {});
+      _whenToggleAllIconClick();
+      expect(_component.Data.ToggleAll).toHaveBeenCalled();
+      _teardown();
+    });
 
     it("should expand/collapse tree", async () => {
       await _setupAsync();
       _setup(() => {});
-      _whenToggleAll();
+      _whenToggleAllIconClick();
       _thenExpanded();
-      _whenToggleAll();
+      _whenToggleAllIconClick();
       _thenCollapsed();
       _teardown();
-    });
-
-    it("should save state in cache", async () => {
-      await _setupAsync();
-      _setup(() => {});
-      _whenToggleAll();
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID_treeviewcomponent", "AllCollapsed", false);
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID_treeviewcomponent", "ExpandedNodes", []);
-      _teardown();
-    });
-
-  });
-
-  describe("IsNodeCollapsed", () => {
-
-    it("should get expanded nodes from cache", async () => {
-      await _setupAsync();
-      _setup(() => _givenState(true, [1]));
-      _whenIsNodeCollapsed(1);
-      expect(_cacheService.StateManager.GetValue).toHaveBeenCalledWith("someID_treeviewcomponent", "ExpandedNodes", []);
-      _teardown()
-    });
-
-    it("should return true by default", async () => {
-      await _setupAsync();
-      _setup(() => {});
-      _whenIsNodeCollapsed(1);
-      expect(_thenResult).toBe(true);
-      _teardown()
-    });
-
-    it("should return false if node is expanded", async () => {
-      await _setupAsync();
-      _setup(() => _givenState(true, [1]));
-      _whenIsNodeCollapsed(1);
-      expect(_thenResult).toBe(false);
-      _teardown()
-    });
-
-    it("should return false if tree is expanded", async () => {
-      await _setupAsync();
-      _setup(() => _givenState(false, []));
-      _whenIsNodeCollapsed(1);
-      expect(_thenResult).toBe(false);
-      _teardown()
     });
 
   });

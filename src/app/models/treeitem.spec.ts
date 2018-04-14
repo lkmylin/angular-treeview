@@ -75,9 +75,15 @@ describe("models/treeitem", () => {
     _teardown();
   });
 
-  it("should not be collapsed if node is expanded in cache", () => {
+  it("should not be collapsed if tree is collapsed but node is cached", () => {
     _setup(() => _givenState(true, [1]));
     expect(_treeitem.Collapsed).toBe(false);
+    _teardown();
+  });
+
+  it("should be collapsed if tree is expanded but node is cached", () => {
+    _setup(() => _givenState(false, [1]));
+    expect(_treeitem.Collapsed).toBe(true);
     _teardown();
   });
 
@@ -96,9 +102,9 @@ describe("models/treeitem", () => {
     it("should cache state", () => {
       _setup(() => {});
       _whenToggleNode();
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "ExpandedNodes", [1]);
+      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "CachedNodes", [1]);
       _whenToggleNode();
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "ExpandedNodes", []);
+      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "CachedNodes", []);
       _teardown();
     });
 

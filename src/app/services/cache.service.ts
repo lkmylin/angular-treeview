@@ -21,7 +21,7 @@ export interface IStateManager {
 
 export interface ICachedProperties {
   AllCollapsed: string;
-  ExpandedNodes: string;
+  CachedNodes: string;
 }
 
 class StateManager implements IStateManager {
@@ -42,7 +42,7 @@ class StateManager implements IStateManager {
     this.CurrentState = globalScope.localStorage && globalScope.localStorage.TreeviewCache ? JSON.parse(globalScope.localStorage.TreeviewCache) : {};
     this.CachedProperties = {
       AllCollapsed: "AllCollapsed",
-      ExpandedNodes: "ExpandedNodes"
+      CachedNodes: "CachedNodes"
     }
   }
 }

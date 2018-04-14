@@ -32,6 +32,7 @@ describe("components/treeitem", () => {
     _component = _fixture.componentInstance;    
     _treeview = new Treeview("someID", TestData, _cacheService.StateManager);
     _component.Item = _treeview.TreeItems[0];
+    spyOn(_component.Item, "ToggleNode").and.callThrough();
     _fixture.detectChanges();
   };
 
@@ -42,26 +43,33 @@ describe("components/treeitem", () => {
     _treeview = null;
   };
 
-  let _givenState: (collapsed: boolean, expandedNodes: number[]) => void = (collapsed: boolean, expandedNodes: number[]) => {
+  let _givenState: (collapsed: boolean, cachedNodes: number[]) => void = (collapsed: boolean, cachedNodes: number[]) => {
     spyOn(_cacheService.StateManager, "GetValue")
       .and.callFake((id: string, property: string, defaultValue: any) => {
-        return property === "AllCollapsed" ? collapsed : expandedNodes;
+        return property === "AllCollapsed" ? collapsed : cachedNodes;
       });
   };
 
-  let _whenToggleNode: () => void = () => {
-    _component.Item.ToggleNode();
+  let _whenClickPlusIcon: () => void = () => {
+    _fixture.debugElement.queryAll(By.css("img"))[0].nativeElement.click();
     _fixture.detectChanges();
   };
 
-  let _thenCollapsed: () => void = () => {
-    expect(_fixture.debugElement.queryAll(By.css("img"))[0].nativeElement.src.endsWith("plus.gif")).toBe(true);
-    expect(_fixture.debugElement.queryAll(By.css("img"))[1].nativeElement.src.endsWith("folder.gif")).toBe(true);
+  let _whenClickFolderIcon: () => void = () => {
+    _fixture.debugElement.queryAll(By.css("img"))[1].nativeElement.click();
+    _fixture.detectChanges();    
   };
 
-  let _thenExpanded: () => void = () => {
+  let _thenCollapsed: (all: boolean) => void = (all: boolean) => {
+    expect(_fixture.debugElement.queryAll(By.css("img"))[0].nativeElement.src.endsWith("plus.gif")).toBe(true);
+    expect(_fixture.debugElement.queryAll(By.css("img"))[1].nativeElement.src.endsWith("folder.gif")).toBe(true);
+    expect(_fixture.debugElement.queryAll(By.css("[hidden]")).length).toBe(all ? 2 : 1)
+  };
+
+  let _thenExpanded: (all: boolean) => void = (all : boolean) => {
     expect(_fixture.debugElement.queryAll(By.css("img"))[0].nativeElement.src.endsWith("minus.gif")).toBe(true);
     expect(_fixture.debugElement.queryAll(By.css("img"))[1].nativeElement.src.endsWith("open.gif")).toBe(true);
+    expect(_fixture.debugElement.queryAll(By.css("[hidden]")).length).toBe(all ? 0 : 1);
   };
 
   it("should create", async () => {
@@ -78,7 +86,7 @@ describe("components/treeitem", () => {
     _teardown();
   });
 
-  it("should have children", async () => {
+  it("should have descendants", async () => {
     await _setupAsync();
     _setup(() => {});
     expect(_fixture.debugElement.queryAll(By.css("app-treeitem")).length).toBe(3);
@@ -88,34 +96,72 @@ describe("components/treeitem", () => {
   it("should be collapsed by default", async () => {
     await _setupAsync();
     _setup(() => {});
-    _thenCollapsed();
+    _thenCollapsed(true);
     _teardown();
   });
 
   it("should not be collapsed if tree is expanded", async () => {
     await _setupAsync();
     _setup(() => _givenState(false, []));
-    _thenExpanded();
+    _thenExpanded(true);
     _teardown();
   });
 
-  it("should not be collapsed if node is expanded in cache", async () => {
+  it("should not be collapsed if tree is collapsed but node is cached", async () => {
     await _setupAsync();
     _setup(() => _givenState(true, [1]));
-    _thenExpanded();
+    _thenExpanded(false);
     _teardown();
   });
 
-  describe("ToggleNode", () => {
+  it("should be collapsed if tree is expanded but node is cached", async () => {
+    await _setupAsync();
+    _setup(() => _givenState(false, [1]));
+    _thenCollapsed(false);
+    _teardown();
+  });
 
-    it("should toggle collapsed", async () => {
+  describe("plus-icon click event", () => {
+
+    it("should invoke ToggleNode", async () => {
       await _setupAsync();
       _setup(() => {});
-      _thenCollapsed();
-      _whenToggleNode();
-      _thenExpanded();
-      _whenToggleNode();
-      _thenCollapsed();
+      _whenClickPlusIcon();
+      expect(_component.Item.ToggleNode).toHaveBeenCalled();
+      _teardown();
+    });
+
+    it("should toggle node", async () => {
+      await _setupAsync();
+      _setup(() => {});
+      _thenCollapsed(true);
+      _whenClickPlusIcon();
+      _thenExpanded(false);
+      _whenClickPlusIcon();
+      _thenCollapsed(true);
+      _teardown();
+    });
+
+  });
+
+  describe("folder-icon click event", () => {
+
+    it("should invoke ToggleNode", async () => {
+      await _setupAsync();
+      _setup(() => {});
+      _whenClickPlusIcon();
+      expect(_component.Item.ToggleNode).toHaveBeenCalled();
+      _teardown();
+    });
+
+    it("should toggle node", async () => {
+      await _setupAsync();
+      _setup(() => {});
+      _thenCollapsed(true);
+      _whenClickFolderIcon();
+      _thenExpanded(false);
+      _whenClickFolderIcon();
+      _thenCollapsed(true);
       _teardown();
     });
 

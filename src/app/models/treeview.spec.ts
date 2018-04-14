@@ -86,7 +86,7 @@ describe("models/treeview", () => {
       _setup(() => {});
       _whenToggleAll();
       expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "AllCollapsed", false);
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "ExpandedNodes", []);
+      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "CachedNodes", []);
       _teardown();
     });
 
@@ -97,7 +97,7 @@ describe("models/treeview", () => {
     it("should get expanded nodes from cache", () => {
       _setup(() => _givenState(true, [1]));
       _whenIsNodeCollapsed(1);
-      expect(_cacheService.StateManager.GetValue).toHaveBeenCalledWith("someID", "ExpandedNodes", []);
+      expect(_cacheService.StateManager.GetValue).toHaveBeenCalledWith("someID", "CachedNodes", []);
       _teardown()
     });
 

@@ -25,14 +25,14 @@ export class Treeview implements ITreeview {
       };
       context.Collapsed = !context.Collapsed;      
       context.StateManager.SetValue(context.ID, context.StateManager.CachedProperties.AllCollapsed, context.Collapsed);
-      context.StateManager.SetValue(context.ID, context.StateManager.CachedProperties.ExpandedNodes, []);
+      context.StateManager.SetValue(context.ID, context.StateManager.CachedProperties.CachedNodes, []);
       toggleChildren(context.TreeItems);
     };
     IsNodeCollapsed(treeKey: number): boolean {
-      const expandedNodes = this.StateManager.GetValue(this.ID, this.StateManager.CachedProperties.ExpandedNodes, []);
-      if (expandedNodes.length === 0) return this.Collapsed;
-      const filteredExpandedNodes = expandedNodes.filter((tk: number) => tk === treeKey);
-      return filteredExpandedNodes.length === 0;
+      const cachedNodes = this.StateManager.GetValue(this.ID, this.StateManager.CachedProperties.CachedNodes, []);
+      if (cachedNodes.length === 0) return this.Collapsed;
+      const filteredExpandedNodes = cachedNodes.filter((tk: number) => tk === treeKey);
+      return filteredExpandedNodes.length === 0 ? this.Collapsed : !this.Collapsed;
     };
     constructor (id: string, items : Array<ITreeItemPartial>, stateManager: IStateManager) {
       const context = this;

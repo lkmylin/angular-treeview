@@ -26,8 +26,12 @@ describe("services/treedata", () => {
     expect(service).toBeTruthy();
   }));
 
-  it("should return tree data", inject([TreedataService], (service: TreedataService) => {    
-    service.Get("some_url").subscribe(data => expect(data).toEqual([{TreeKey: 1, ParentKey: 0, Title: "Some Tree Item"}]));
-  }));
+  describe("Get", () => {
+
+    it("should return tree data", inject([TreedataService], (service: TreedataService) => {    
+      service.Get("some_url").subscribe(data => expect(data).toEqual([{TreeKey: 1, ParentKey: 0, Title: "Some Tree Item"}]));
+    }));
+
+  });
   
 });

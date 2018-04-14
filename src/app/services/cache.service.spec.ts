@@ -33,29 +33,49 @@ describe("services/cache", () => {
     _setup({});
     expect(_cacheService).toBeTruthy();
     _teardown();
-  });
+  })
 
   describe("StateManager", () => {
 
-    it("should get value from cache", () => {
-      _setup({TreeviewCache: "{\"SomeID\":{\"SomeProperty\":\"Some Value\"}}"});
-      _whenGetValue("SomeID", "SomeProperty", "");
-      expect(_thenValue).toBe("Some Value");
-      _teardown();
-    });
-
-    it("should return default value if requested property not in cache", () => {
-      _setup({TreeviewCache: "{\"SomeID\":{\"SomeProperty\":\"Some Value\"}}"});
-      _whenGetValue("SomeID", "SomePropertyNotInCache", "Default Value");
-      expect(_thenValue).toBe("Default Value");
-      _teardown();
-    });
-
-    it("should save value in cache", () => {
+    it("should be created", () => {
       _setup({});
-      _whenSetValue("SomeID", "SomeProperty", "Some Value");
-      expect(_cacheService.StateManager.CurrentState.SomeID.SomeProperty).toBe("Some Value");
+      expect(_cacheService.StateManager).toBeTruthy();
       _teardown();
+    });
+
+    it("should contain cache data", () => {
+      _setup({TreeviewCache: "{\"SomeID\":{\"SomeProperty\":\"Some Value\"}}"});
+      expect(_cacheService.StateManager.CurrentState).toEqual({SomeID: {SomeProperty: "Some Value"}});
+      _teardown();
+    });
+
+    describe("GetValue", () => {
+
+      it("should get value from cache", () => {
+        _setup({TreeviewCache: "{\"SomeID\":{\"SomeProperty\":\"Some Value\"}}"});
+        _whenGetValue("SomeID", "SomeProperty", "");
+        expect(_thenValue).toBe("Some Value");
+        _teardown();
+      });
+  
+      it("should return default value if requested property not in cache", () => {
+        _setup({TreeviewCache: "{\"SomeID\":{\"SomeProperty\":\"Some Value\"}}"});
+        _whenGetValue("SomeID", "SomePropertyNotInCache", "Default Value");
+        expect(_thenValue).toBe("Default Value");
+        _teardown();
+      });
+
+    });
+
+    describe("SetValue", () => {
+
+      it("should save value in cache", () => {
+        _setup({});
+        _whenSetValue("SomeID", "SomeProperty", "Some Value");
+        expect(_cacheService.StateManager.CurrentState.SomeID.SomeProperty).toBe("Some Value");
+        _teardown();
+      });
+
     });
 
   });
