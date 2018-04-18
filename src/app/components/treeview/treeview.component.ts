@@ -1,27 +1,17 @@
-import { Component, OnInit, Inject, Input } from "@angular/core";
-import { CacheService } from "../../services/cache.service";
-import {TreedataService} from "../../services/treedata.service";
-import { ITreeview, Treeview } from "../../models/treeview";
-import { ITreeItemPartial } from "../../models/treeitem";
+import { Component, Input } from "@angular/core";
+import { ITreeview } from "../../models/treeview";
 
 @Component({
   selector: "app-treeview",
   templateUrl: "./treeview.component.html",
   styleUrls: ["./treeview.component.css"]
 })
-export class TreeviewComponent implements OnInit {
+export class TreeviewComponent {
 
-  @Input("datasource") _url: string;
-  @Input("treeid") _id: string;
+  @Input("datasource") DataSourceUrl: string;
+  @Input("treeid") ID: string;
   Data: ITreeview;
 
-  constructor(private _cacheService: CacheService, private _treeDataService: TreedataService) { }
-
-  ngOnInit() {
-    const context = this;
-    context._treeDataService.Get(context._url).subscribe((data: ITreeItemPartial[]) => {
-      context.Data = new Treeview(context._id + "_treeviewcomponent", data, context._cacheService.StateManager);
-    });
-  }
+  constructor() { }
 
 }

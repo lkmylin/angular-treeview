@@ -40,3 +40,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# ng-packagr files
+/angular-treeview
+/.ng_pkg_build
+angular-treeview.tgz

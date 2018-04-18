@@ -1,4 +1,5 @@
 import { Inject, Injectable } from "@angular/core";
+import { IStateManager, ICachedProperties } from "../../../../angular-treeview";
 
 @Injectable()
 export class CacheService {
@@ -9,19 +10,6 @@ export class CacheService {
     this.StateManager = new StateManager(this._window);
   }
 
-}
-
-export interface IStateManager {
-  GlobalScope: Window;
-  CachedProperties: ICachedProperties;
-  CurrentState: any;
-  GetValue(controlID: string, property: string, defaultValue: any): any;
-  SetValue(controlID: string, property: string, value: any): void;
-}
-
-export interface ICachedProperties {
-  AllCollapsed: string;
-  CachedNodes: string;
 }
 
 class StateManager implements IStateManager {

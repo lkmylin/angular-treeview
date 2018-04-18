@@ -1,42 +1,35 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TreeviewComponent } from "../components/treeview/treeview.component";
 import { TreeItemComponent } from "../components/treeitem/treeitem.component";
-import { CacheService } from "../services/cache.service";
-import { WindowMock } from "../services/cache.service.spec";
-import { Treeview, ITreeview } from "./treeview";
+import { Treeview, ITreeview, IStateManager } from "./treeview";
 import { TestData } from "../components/treeitem/treeitem.component.spec";
 import { ITreeItem } from "./treeitem";
+import { StateManagerMock } from "./treeview.spec";
 
 describe("models/treeitem", () => {
 
-  let _cacheService: CacheService = null;
+  let _stateManager: IStateManager = null;
   let _treeview: ITreeview = null;
   let _treeitem: ITreeItem = null;
 
   let _setup: (additionalAction: () => void) => void = (additionalAction: () => void) => {
-    TestBed.configureTestingModule({
-      providers: [
-        {provide: "$window", useValue: new WindowMock({})},
-        CacheService
-      ]
-    });
-    _cacheService = TestBed.get(CacheService);
-    spyOn(_cacheService.StateManager, "SetValue");
+    _stateManager = new StateManagerMock();
+    spyOn(_stateManager, "SetValue");
     additionalAction();
-    _treeview = new Treeview("someID", TestData, _cacheService.StateManager);
+    _treeview = new Treeview("someID", TestData, _stateManager);
     _treeitem = _treeview.TreeItems[0];
   };
 
   let _teardown: () => void = () => {
-    _cacheService = null;
+    _stateManager = null;
     _treeview = null;
     _treeitem = null;
   };
 
   let _givenState: (collapsed: boolean, expandedNodes: number[]) => void = (collapsed: boolean, expandedNodes: number[]) => {
-    spyOn(_cacheService.StateManager, "GetValue")
+    spyOn(_stateManager, "GetValue")
       .and.callFake((id: string, property: string, defaultValue: any) => {
-        return property === "AllCollapsed" ? collapsed : expandedNodes;
+        return property === _stateManager.CachedProperties.AllCollapsed ? collapsed : expandedNodes;
       });
   };
 
@@ -102,9 +95,9 @@ describe("models/treeitem", () => {
     it("should cache state", () => {
       _setup(() => {});
       _whenToggleNode();
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "CachedNodes", [1]);
+      expect(_stateManager.SetValue).toHaveBeenCalledWith(_treeview.ID, _stateManager.CachedProperties.CachedNodes, [1]);
       _whenToggleNode();
-      expect(_cacheService.StateManager.SetValue).toHaveBeenCalledWith("someID", "CachedNodes", []);
+      expect(_stateManager.SetValue).toHaveBeenCalledWith(_treeview.ID, _stateManager.CachedProperties.CachedNodes, []);
       _teardown();
     });
 

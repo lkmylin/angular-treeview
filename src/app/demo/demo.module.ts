@@ -1,23 +1,19 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { TreeItemComponent } from "./components/treeitem/treeitem.component";
-import { TreeviewComponent } from "./components/treeview/treeview.component";
 import { CacheService } from "./services/cache.service";
 import { TreedataService } from "./services/treedata.service";
 import { HttpModule } from "@angular/http";
 import { RootComponent } from "./components/root/root.component";
-import { DemoComponent } from "../assets/demo/demo.component";
+import { TreeviewModule } from "../treeview.module";
 
 @NgModule({
   declarations: [
-    TreeItemComponent,
-    TreeviewComponent,
-    RootComponent,
-    DemoComponent
+    RootComponent
   ],
   imports: [
     BrowserModule,
-    HttpModule
+    HttpModule,
+    TreeviewModule
   ],
   providers: [
     {provide: "$window", useValue: window},
@@ -26,4 +22,4 @@ import { DemoComponent } from "../assets/demo/demo.component";
   ],
   bootstrap: [RootComponent]
 })
-export class AppModule { }
+export class DemoModule { }

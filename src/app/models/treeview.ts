@@ -1,5 +1,4 @@
 import { ITreeItemPartial, ITreeItem, TreeItem } from "./treeitem";
-import { IStateManager } from "../services/cache.service";
 
 export interface ITreeview {
   ID: string;
@@ -46,4 +45,17 @@ export class Treeview implements ITreeview {
         }
       });
     }
+}
+
+export interface IStateManager {
+  GlobalScope: Window;
+  CachedProperties: ICachedProperties;
+  CurrentState: any;
+  GetValue(controlID: string, property: string, defaultValue: any): any;
+  SetValue(controlID: string, property: string, value: any): void;
+}
+
+export interface ICachedProperties {
+  AllCollapsed: string;
+  CachedNodes: string;
 }

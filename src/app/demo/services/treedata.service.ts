@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Http } from "@angular/http";
-import { ITreeItemPartial } from "../models/treeitem";
+import { ITreeItemPartial } from "../../../../angular-treeview";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";

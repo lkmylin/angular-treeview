@@ -1,36 +1,31 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { TreeItemComponent } from "./treeitem.component";
 import { TreeItem, ITreeItemPartial } from "../../models/treeitem";
-import { Treeview, ITreeview } from "../../models/treeview";
-import { WindowMock } from "../../services/cache.service.spec";
-import { CacheService } from "../../services/cache.service";
+import { Treeview, ITreeview, IStateManager } from "../../models/treeview";
 import { By } from "@angular/platform-browser";
+import { StateManagerMock } from "../../models/treeview.spec";
 
 describe("components/treeitem", () => {
 
   let _component: TreeItemComponent;
   let _fixture: ComponentFixture<TreeItemComponent>;
   let _treeview: ITreeview;
-  let _cacheService: CacheService;
+  let _stateManager: IStateManager;
 
   let _setupAsync: () => void = () => {
     TestBed.configureTestingModule({
-      declarations: [ TreeItemComponent ],
-      providers: [
-        {provide: "$window", useValue: new WindowMock({})},
-        CacheService
-      ]
+      declarations: [ TreeItemComponent ]
     })
     .compileComponents();
   };
 
   let _setup: (additionalAction: () => void) => void = (additionalAction: () => void) => {
-    _cacheService = TestBed.get(CacheService);
-    spyOn(_cacheService.StateManager, "SetValue");
+    _stateManager = new StateManagerMock();
+    spyOn(_stateManager, "SetValue");
     additionalAction();
     _fixture = TestBed.createComponent(TreeItemComponent);
     _component = _fixture.componentInstance;    
-    _treeview = new Treeview("someID", TestData, _cacheService.StateManager);
+    _treeview = new Treeview("someID", TestData, _stateManager);
     _component.Item = _treeview.TreeItems[0];
     spyOn(_component.Item, "ToggleNode").and.callThrough();
     _fixture.detectChanges();
@@ -39,14 +34,14 @@ describe("components/treeitem", () => {
   let _teardown: () => void = () => {
     _component = null;
     _fixture = null;
-    _cacheService = null;
+    _stateManager = null;
     _treeview = null;
   };
 
   let _givenState: (collapsed: boolean, cachedNodes: number[]) => void = (collapsed: boolean, cachedNodes: number[]) => {
-    spyOn(_cacheService.StateManager, "GetValue")
+    spyOn(_stateManager, "GetValue")
       .and.callFake((id: string, property: string, defaultValue: any) => {
-        return property === "AllCollapsed" ? collapsed : cachedNodes;
+        return property === _stateManager.CachedProperties.AllCollapsed ? collapsed : cachedNodes;
       });
   };
 
