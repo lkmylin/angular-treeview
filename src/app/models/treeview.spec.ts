@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TreeviewComponent } from "../components/treeview/treeview.component";
 import { TreeItemComponent } from "../components/treeitem/treeitem.component";
-import { Treeview, ITreeview, IStateManager, ICachedProperties } from "./treeview";
+import { Treeview, ITreeview } from "./treeview";
 import { TestData } from "../components/treeitem/treeitem.component.spec";
+import { IStateManager } from "../helpers/statemanager";
 
 describe("models/treeview", () => {
 
@@ -10,10 +10,9 @@ describe("models/treeview", () => {
   let _treeview: ITreeview = null;
   let _thenResult: any = null;
 
-  let _setup: (additionalAction: () => void) => void = (additionalAction: () => void) => {
+  let _setup: () => void = () => {
     _stateManager = new StateManagerMock();
     spyOn(_stateManager, "SetValue");
-    additionalAction();
     _treeview = new Treeview("someID", TestData, _stateManager);
   };
 
@@ -26,8 +25,9 @@ describe("models/treeview", () => {
   let _givenState: (collapsed: boolean, expandedNodes: number[]) => void = (collapsed: boolean, expandedNodes: number[]) => {
     spyOn(_stateManager, "GetValue")
       .and.callFake((id: string, property: string, defaultValue: any) => {
-        return property === _stateManager.CachedProperties.AllCollapsed ? collapsed : expandedNodes;
+        return property === _treeview.CacheProperties.AllCollapsed ? collapsed : expandedNodes;
       });
+    _treeview = new Treeview("someID", TestData, _stateManager);
   };
 
   let _whenToggleAll: () => void = () => {
@@ -38,48 +38,40 @@ describe("models/treeview", () => {
     _thenResult = _treeview.IsNodeCollapsed(treeKey);
   };
 
+  beforeEach(_setup);
+  afterEach(_teardown);
+
   it("should be instantiated", () => {
-    _setup(() => {});
     expect(_treeview).toBeTruthy();
-    _teardown();
   });
 
   it("should build tree", () => {
-    _setup(() => {});
     expect(_treeview.TreeItems.length).toBe(4);
     expect(_treeview.TreeItems[0].Children.length).toBe(2);
-    _teardown();
   });
 
   it("should be collapsed by default", () => {
-    _setup(() => {});
     expect(_treeview.Collapsed).toBe(true);
-    _teardown();
   });
 
   it("should not be collapsed if tree is expanded", () => {
-    _setup(() => _givenState(false, []));
+    _givenState(false, []);
     expect(_treeview.Collapsed).toBe(false);
-    _teardown();
   });
 
   describe("ToggleAll", () => {
 
     it("should expand/collapse tree", () => {
-      _setup(() => {});
       _whenToggleAll();
       expect(_treeview.Collapsed).toBe(false);
       _whenToggleAll();
       expect(_treeview.Collapsed).toBe(true);
-      _teardown();
     });
 
     it("should save state in cache", () => {
-      _setup(() => {});
       _whenToggleAll();
-      expect(_stateManager.SetValue).toHaveBeenCalledWith(_treeview.ID, _stateManager.CachedProperties.AllCollapsed, false);
-      expect(_stateManager.SetValue).toHaveBeenCalledWith(_treeview.ID, _stateManager.CachedProperties.CachedNodes, []);
-      _teardown();
+      expect(_stateManager.SetValue).toHaveBeenCalledWith(_treeview.ID, _treeview.CacheProperties.AllCollapsed, false);
+      expect(_stateManager.SetValue).toHaveBeenCalledWith(_treeview.ID, _treeview.CacheProperties.CachedNodes, []);
     });
 
   });
@@ -87,31 +79,26 @@ describe("models/treeview", () => {
   describe("IsNodeCollapsed", () => {
 
     it("should get expanded nodes from cache", () => {
-      _setup(() => _givenState(true, [1]));
+      _givenState(true, [1]);
       _whenIsNodeCollapsed(1);
-      expect(_stateManager.GetValue).toHaveBeenCalledWith(_treeview.ID, _stateManager.CachedProperties.CachedNodes, []);
-      _teardown()
+      expect(_stateManager.GetValue).toHaveBeenCalledWith(_treeview.ID, _treeview.CacheProperties.CachedNodes, []);
     });
 
     it("should return true by default", () => {
-      _setup(() => {});
       _whenIsNodeCollapsed(1);
       expect(_thenResult).toBe(true);
-      _teardown()
     });
 
     it("should return false if node is expanded", () => {
-      _setup(() => _givenState(true, [1]));
+      _givenState(true, [1]);
       _whenIsNodeCollapsed(1);
       expect(_thenResult).toBe(false);
-      _teardown()
     });
 
     it("should return false if tree is expanded", () => {
-      _setup(() => _givenState(false, []));
+      _givenState(false, []);
       _whenIsNodeCollapsed(1);
       expect(_thenResult).toBe(false);
-      _teardown()
     });
 
   });
@@ -120,13 +107,9 @@ describe("models/treeview", () => {
 
 export class StateManagerMock implements IStateManager {
   GlobalScope: Window;
-  CachedProperties: ICachedProperties = {
-    AllCollapsed: "AllCollapsed",
-    CachedNodes: "CachedNodes"
-  };
   CurrentState: any;
   GetValue(controlID: string, property: string, defaultValue: any) : any {
-    return property === this.CachedProperties.AllCollapsed ? true : [];
+    return defaultValue;
   };
   SetValue(controlID: string, property: string, value: any) : void {};
 }

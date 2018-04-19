@@ -1,9 +1,10 @@
-import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 import { TreeItemComponent } from "./treeitem.component";
 import { TreeItem, ITreeItemPartial } from "../../models/treeitem";
-import { Treeview, ITreeview, IStateManager } from "../../models/treeview";
+import { Treeview, ITreeview, } from "../../models/treeview";
 import { By } from "@angular/platform-browser";
 import { StateManagerMock } from "../../models/treeview.spec";
+import { IStateManager } from "../../helpers/statemanager";
 
 describe("components/treeitem", () => {
 
@@ -12,23 +13,22 @@ describe("components/treeitem", () => {
   let _treeview: ITreeview;
   let _stateManager: IStateManager;
 
-  let _setupAsync: () => void = () => {
-    TestBed.configureTestingModule({
-      declarations: [ TreeItemComponent ]
-    })
-    .compileComponents();
-  };
-
-  let _setup: (additionalAction: () => void) => void = (additionalAction: () => void) => {
-    _stateManager = new StateManagerMock();
-    spyOn(_stateManager, "SetValue");
-    additionalAction();
+  let _createComponent: () => void = () : void => {
     _fixture = TestBed.createComponent(TreeItemComponent);
     _component = _fixture.componentInstance;    
     _treeview = new Treeview("someID", TestData, _stateManager);
     _component.Item = _treeview.TreeItems[0];
     spyOn(_component.Item, "ToggleNode").and.callThrough();
     _fixture.detectChanges();
+  };
+
+  let _setup: () => void = () => {
+    TestBed.configureTestingModule({
+      declarations: [ TreeItemComponent ]
+    }).compileComponents();
+    _stateManager = new StateManagerMock();
+    spyOn(_stateManager, "SetValue");
+    _createComponent();
   };
 
   let _teardown: () => void = () => {
@@ -41,8 +41,9 @@ describe("components/treeitem", () => {
   let _givenState: (collapsed: boolean, cachedNodes: number[]) => void = (collapsed: boolean, cachedNodes: number[]) => {
     spyOn(_stateManager, "GetValue")
       .and.callFake((id: string, property: string, defaultValue: any) => {
-        return property === _stateManager.CachedProperties.AllCollapsed ? collapsed : cachedNodes;
+        return property === _treeview.CacheProperties.AllCollapsed ? collapsed : cachedNodes;
       });
+    _createComponent();
   };
 
   let _whenClickPlusIcon: () => void = () => {
@@ -67,97 +68,70 @@ describe("components/treeitem", () => {
     expect(_fixture.debugElement.queryAll(By.css("[hidden]")).length).toBe(all ? 0 : 1);
   };
 
-  it("should create", async () => {
-    await _setupAsync();
-    _setup(() => {});
+  beforeEach(_setup);
+  afterEach(_teardown);
+
+  it("should create", () => {
     expect(_component).toBeTruthy();
-    _teardown();
   });
 
-  it("should have title", async () => {
-    await _setupAsync();
-    _setup(() => {});
+  it("should have title", () => {
     expect(_fixture.debugElement.query(By.css(".treeview-treeitem-title")).nativeElement.textContent).toBe("TreeItem1");
-    _teardown();
   });
 
-  it("should have descendants", async () => {
-    await _setupAsync();
-    _setup(() => {});
+  it("should have descendants", () => {
     expect(_fixture.debugElement.queryAll(By.css("app-treeitem")).length).toBe(3);
-    _teardown();
   });
 
-  it("should be collapsed by default", async () => {
-    await _setupAsync();
-    _setup(() => {});
+  it("should be collapsed by default", () => {
     _thenCollapsed(true);
-    _teardown();
   });
 
-  it("should not be collapsed if tree is expanded", async () => {
-    await _setupAsync();
-    _setup(() => _givenState(false, []));
+  it("should not be collapsed if tree is expanded", () => {
+    _givenState(false, [])
     _thenExpanded(true);
-    _teardown();
   });
 
-  it("should not be collapsed if tree is collapsed but node is cached", async () => {
-    await _setupAsync();
-    _setup(() => _givenState(true, [1]));
+  it("should not be collapsed if tree is collapsed but node is cached", () => {
+    _givenState(true, [1])
     _thenExpanded(false);
-    _teardown();
   });
 
-  it("should be collapsed if tree is expanded but node is cached", async () => {
-    await _setupAsync();
-    _setup(() => _givenState(false, [1]));
+  it("should be collapsed if tree is expanded but node is cached", () => {
+    _givenState(false, [1])
     _thenCollapsed(false);
-    _teardown();
   });
 
   describe("plus-icon click event", () => {
 
-    it("should invoke ToggleNode", async () => {
-      await _setupAsync();
-      _setup(() => {});
+    it("should invoke ToggleNode", () => {
       _whenClickPlusIcon();
       expect(_component.Item.ToggleNode).toHaveBeenCalled();
-      _teardown();
     });
 
-    it("should toggle node", async () => {
-      await _setupAsync();
-      _setup(() => {});
+    it("should toggle node", () => {
       _thenCollapsed(true);
       _whenClickPlusIcon();
       _thenExpanded(false);
       _whenClickPlusIcon();
       _thenCollapsed(true);
-      _teardown();
     });
 
   });
 
   describe("folder-icon click event", () => {
 
-    it("should invoke ToggleNode", async () => {
-      await _setupAsync();
-      _setup(() => {});
+    it("should invoke ToggleNode", () => {
       _whenClickPlusIcon();
       expect(_component.Item.ToggleNode).toHaveBeenCalled();
-      _teardown();
     });
 
-    it("should toggle node", async () => {
-      await _setupAsync();
-      _setup(() => {});
+    it("should toggle node", () => {
       _thenCollapsed(true);
       _whenClickFolderIcon();
       _thenExpanded(false);
       _whenClickFolderIcon();
       _thenCollapsed(true);
-      _teardown();
     });
 
   });

@@ -1,20 +1,15 @@
 import { Inject, Injectable } from "@angular/core";
-import { IStateManager, ICachedProperties } from "../../../../angular-treeview";
 
-@Injectable()
-export class CacheService {
-
-  StateManager: IStateManager;
-
-  constructor(@Inject("$window") private _window: Window) {
-    this.StateManager = new StateManager(this._window);
-  }
-
+export interface IStateManager {
+  GlobalScope: Window;
+  CurrentState: any;
+  GetValue(controlID: string, property: string, defaultValue: any): any;
+  SetValue(controlID: string, property: string, value: any): void;
 }
 
-class StateManager implements IStateManager {
+@Injectable()
+export class StateManager implements IStateManager {
   GlobalScope: Window;
-  CachedProperties: ICachedProperties;
   CurrentState: any;
   GetValue(controlID: string, property: string, defaultValue: any): any {
     if (!this.CurrentState[controlID]) this.CurrentState[controlID] = {};
@@ -25,12 +20,8 @@ class StateManager implements IStateManager {
     this.CurrentState[controlID][property] = value;
     if (this.GlobalScope.localStorage) this.GlobalScope.localStorage.TreeviewCache = JSON.stringify(this.CurrentState);
   };
-  constructor(globalScope: Window) {
+  constructor(@Inject("window") globalScope: any) {
     this.GlobalScope = globalScope;
     this.CurrentState = globalScope.localStorage && globalScope.localStorage.TreeviewCache ? JSON.parse(globalScope.localStorage.TreeviewCache) : {};
-    this.CachedProperties = {
-      AllCollapsed: "AllCollapsed",
-      CachedNodes: "CachedNodes"
-    }
   }
 }

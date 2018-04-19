@@ -26,7 +26,7 @@ export class TreeItem implements ITreeItem {
   ToggleNode(): void {
     const context = this;
     context.Collapsed = !context.Collapsed;
-    var cachedNodes = context.RootScope.StateManager.GetValue(context.RootScope.ID, context.RootScope.StateManager.CachedProperties.CachedNodes, []);
+    var cachedNodes = context.RootScope.StateManager.GetValue(context.RootScope.ID, context.RootScope.CacheProperties.CachedNodes, []);
     cachedNodes = cachedNodes.filter((tk: number) => tk !== context.TreeKey);
     if (context.RootScope.Collapsed && !context.Collapsed) {
       cachedNodes[cachedNodes.length] = context.TreeKey;
@@ -34,7 +34,7 @@ export class TreeItem implements ITreeItem {
     else if (!context.RootScope.Collapsed && context.Collapsed) {
       cachedNodes[cachedNodes.length] = context.TreeKey;
     }
-    context.RootScope.StateManager.SetValue(context.RootScope.ID, context.RootScope.StateManager.CachedProperties.CachedNodes, cachedNodes);
+    context.RootScope.StateManager.SetValue(context.RootScope.ID, context.RootScope.CacheProperties.CachedNodes, cachedNodes);
   };
 
   constructor(item: ITreeItemPartial, items: Array<ITreeItemPartial>, rootScope: ITreeview) {

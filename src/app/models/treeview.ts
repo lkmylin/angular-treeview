@@ -1,3 +1,4 @@
+import { IStateManager } from "../helpers/statemanager";
 import { ITreeItemPartial, ITreeItem, TreeItem } from "./treeitem";
 
 export interface ITreeview {
@@ -7,6 +8,7 @@ export interface ITreeview {
   StateManager: IStateManager;
   ToggleAll(): void;
   IsNodeCollapsed(treeKey: number): boolean;
+  CacheProperties: TreeviewCacheProperties;
 }
 
 export class Treeview implements ITreeview {
@@ -14,6 +16,7 @@ export class Treeview implements ITreeview {
     TreeItems: Array<ITreeItem>;
     Collapsed: boolean;
     StateManager: IStateManager;
+    CacheProperties: TreeviewCacheProperties = new TreeviewCacheProperties();
     ToggleAll(): void {
       const context = this;
       const toggleChildren = (items : Array<ITreeItem>) => {
@@ -23,12 +26,12 @@ export class Treeview implements ITreeview {
         });
       };
       context.Collapsed = !context.Collapsed;      
-      context.StateManager.SetValue(context.ID, context.StateManager.CachedProperties.AllCollapsed, context.Collapsed);
-      context.StateManager.SetValue(context.ID, context.StateManager.CachedProperties.CachedNodes, []);
+      context.StateManager.SetValue(context.ID, context.CacheProperties.AllCollapsed, context.Collapsed);
+      context.StateManager.SetValue(context.ID, context.CacheProperties.CachedNodes, []);
       toggleChildren(context.TreeItems);
     };
     IsNodeCollapsed(treeKey: number): boolean {
-      const cachedNodes = this.StateManager.GetValue(this.ID, this.StateManager.CachedProperties.CachedNodes, []);
+      const cachedNodes = this.StateManager.GetValue(this.ID, this.CacheProperties.CachedNodes, []);
       if (cachedNodes.length === 0) return this.Collapsed;
       const filteredExpandedNodes = cachedNodes.filter((tk: number) => tk === treeKey);
       return filteredExpandedNodes.length === 0 ? this.Collapsed : !this.Collapsed;
@@ -37,7 +40,7 @@ export class Treeview implements ITreeview {
       const context = this;
       context.ID = id;
       context.TreeItems = [];
-      context.Collapsed = stateManager.GetValue(id, stateManager.CachedProperties.AllCollapsed, true);
+      context.Collapsed = stateManager.GetValue(id, context.CacheProperties.AllCollapsed, true);
       context.StateManager = stateManager;
       items.forEach(item => {
         if (item.ParentKey === 0) {
@@ -47,15 +50,7 @@ export class Treeview implements ITreeview {
     }
 }
 
-export interface IStateManager {
-  GlobalScope: Window;
-  CachedProperties: ICachedProperties;
-  CurrentState: any;
-  GetValue(controlID: string, property: string, defaultValue: any): any;
-  SetValue(controlID: string, property: string, value: any): void;
-}
-
-export interface ICachedProperties {
-  AllCollapsed: string;
-  CachedNodes: string;
+export class TreeviewCacheProperties {
+  AllCollapsed: string = "AllCollapsed";
+  CachedNodes: string = "CachedNodes";
 }

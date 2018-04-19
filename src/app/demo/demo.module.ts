@@ -1,10 +1,8 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-import { CacheService } from "./services/cache.service";
-import { TreedataService } from "./services/treedata.service";
 import { HttpModule } from "@angular/http";
 import { RootComponent } from "./components/root/root.component";
-import { TreeviewModule } from "../treeview.module";
+import { TreeviewModule, StateManager } from "@lkmylin/angular-treeview";
 
 @NgModule({
   declarations: [
@@ -16,9 +14,8 @@ import { TreeviewModule } from "../treeview.module";
     TreeviewModule
   ],
   providers: [
-    {provide: "$window", useValue: window},
-    CacheService,
-    TreedataService
+    {provide: "window", useValue: window},
+    StateManager
   ],
   bootstrap: [RootComponent]
 })
