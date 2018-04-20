@@ -4,7 +4,7 @@ import { TreeItem, ITreeItemPartial } from "../../models/treeitem";
 import { Treeview, ITreeview, } from "../../models/treeview";
 import { By } from "@angular/platform-browser";
 import { StateManagerMock } from "../../models/treeview.spec";
-import { IStateManager } from "../../helpers/statemanager";
+import { IStateManager } from "@lkmylin/angular-statemanager";
 
 describe("components/treeitem", () => {
 
@@ -80,7 +80,7 @@ describe("components/treeitem", () => {
   });
 
   it("should have descendants", () => {
-    expect(_fixture.debugElement.queryAll(By.css("app-treeitem")).length).toBe(3);
+    expect(_fixture.debugElement.queryAll(By.css("lkm-treeitem")).length).toBe(3);
   });
 
   it("should be collapsed by default", () => {

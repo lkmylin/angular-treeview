@@ -2,7 +2,7 @@ import { TreeviewComponent } from "../components/treeview/treeview.component";
 import { TreeItemComponent } from "../components/treeitem/treeitem.component";
 import { Treeview, ITreeview } from "./treeview";
 import { TestData } from "../components/treeitem/treeitem.component.spec";
-import { IStateManager } from "../helpers/statemanager";
+import { IStateManager } from "@lkmylin/angular-statemanager";
 
 describe("models/treeview", () => {
 

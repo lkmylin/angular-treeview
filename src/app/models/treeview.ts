@@ -1,4 +1,4 @@
-import { IStateManager } from "../helpers/statemanager";
+import { IStateManager } from "@lkmylin/angular-statemanager";
 import { ITreeItemPartial, ITreeItem, TreeItem } from "./treeitem";
 
 export interface ITreeview {

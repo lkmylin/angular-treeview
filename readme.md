@@ -16,6 +16,30 @@ Run `ng serve -o` to run the demo.
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Installation/Implementation
+## Installation
 
-Run `npm install @lkmylin/angular-treeview --save-dev` to install the package and add add it to your package.json.
+Run `npm install @lkmylin/angular-treeview --save`
+
+Run `npm install @lkmylin/angular-statemanager --save`
+
+## Implementation
+
+In your bootstrap module:
+
+* `import { TreeviewModule } from "@lkmylin/angular-treeview";`
+
+* `import { StateManagerModule, StateManager } from "@lkmylin/angular-statemanager";`
+
+* add `StateManager` to your providers
+
+* add `{provide: "window", useValue: window}` to your providers
+
+* add a TreeviewComponent: `<lkm-treeview treeid="myTree" datasource="assets/treeData.json"></lkm-treeview>`
+
+* treeData.json should be an array of objects with the following properties:
+
+    * `TreeKey: number;`
+
+    * `ParentKey: number;` (The TreeKey of the parent node, or zero for root nodes)
+
+    * `Title: string;`

@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from "@angular/core";
 import { ITreeview, Treeview } from "../../models/treeview";
 import { Http, Response } from "@angular/http";
-import { StateManager } from "../../helpers/statemanager";
+import { StateManager } from "@lkmylin/angular-statemanager";
 import { ITreeItemPartial } from "../../models/treeitem";
 import { Observable } from "rxjs/Rx";
 import "rxjs/add/operator/map";
 import "rxjs/add/operator/catch";
 
 @Component({
-  selector: "app-treeview",
+  selector: "lkm-treeview",
   templateUrl: "./treeview.component.html",
   styleUrls: ["./treeview.component.css"]
 })
