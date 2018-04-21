@@ -10,6 +10,8 @@ Run `npm run packagr` to build the project. The build artifacts will be stored i
 
 ## Demo
 
+Run `ng build` to build the demo.
+
 Run `ng serve -o` to run the demo.
 
 ## Running unit tests
@@ -26,6 +28,8 @@ Run `npm install @lkmylin/angular-statemanager --save`
 
 In your bootstrap module:
 
+* `import { HttpModule } from "@angular/http";`
+
 * `import { TreeviewModule } from "@lkmylin/angular-treeview";`
 
 * `import { StateManagerModule, StateManager } from "@lkmylin/angular-statemanager";`
@@ -34,12 +38,15 @@ In your bootstrap module:
 
 * add `{provide: "window", useValue: window}` to your providers
 
-* add a TreeviewComponent: `<lkm-treeview treeid="myTree" datasource="assets/treeData.json"></lkm-treeview>`
+* add `HttpModule` to your imports
 
-* treeData.json should be an array of objects with the following properties:
+* add a TreeviewComponent: `<lkm-treeview treeid="myTree" datasource="treeDataUrl"></lkm-treeview>`
 
-    * `TreeKey: number;`
+    * `treeDataUrl` can be any URL that returns json, e.g. a static file or REST API. It must return
+      an array of objects of the following form:
 
-    * `ParentKey: number;` (The TreeKey of the parent node, or zero for root nodes)
+        * `TreeKey: number;`
 
-    * `Title: string;`
+        * `ParentKey: number;` (The TreeKey of the parent node, or zero for root nodes)
+
+        * `Title: string;`
